@@ -4,6 +4,43 @@ Ein produktionsnahes Beispielprojekt: **strukturierte, validierte Daten aus
 unstrukturiertem Text extrahieren** – mit **Pydantic v2**, **FastAPI** und
 austauschbaren **LLM-Providern** (OpenAI, Anthropic oder ein Mock-Client für
 kostenlose lokale Nutzung).
+---
+## Einführung
+
+Willkommen beim **Pydantic AI Extraction Service**, einem robusten Referenzprojekt für modernes AI-Engineering. Dieses Projekt demonstriert, wie unstrukturierte Texte (wie Rechnungen oder Lebensläufe) mithilfe von Large Language Models (LLMs) und strenger Typisierung in garantiert valide, strukturierte Daten verwandelt werden können. Durch die Kombination von FastAPI, Pydantic v2 und einem austauschbaren LLM-Client-Interface wird ein bewährtes "Self-Healing"-Muster implementiert, das Validierungsfehler automatisch abfängt und korrigiert. Das System läuft dank eines integrierten Mock-Providers sofort und ohne API-Keys, ist aber nahtlos für den Einsatz mit OpenAI oder Anthropic in der Produktion skalierbar. Es dient als ideale Grundlage, um Best Practices in API-Design, Datenvalidierung und zuverlässiger LLM-Integration zu demonstrieren.
+---
+graph TD
+    A[Client] -->|POST /api/v1/extract| B(FastAPI Router)
+    B -->|Dependency Injection| C(ExtractionService)
+    C -->|1. Lade Pydantic-Schema & baue Prompt| D{LLMClient Interface}
+    
+    D -->|Konfiguriert: Mock| E[MockLLMClient]
+    D -->|Konfiguriert: OpenAI| F[OpenAIClient]
+    D -->|Konfiguriert: Anthropic| G[AnthropicClient]
+    
+    E & F & G -->|Rohes JSON| C
+    C -->|2. Pydantic model_validate| H{Valid?}
+    
+    H -->|Ja| I[Valides Pydantic-Modell]
+    H -->|Nein| J{Max Retries erreicht?}
+    
+    J -->|Nein| K[Prompt um Fehlerkontext erweitern]
+    K -->|Retry| D
+    
+    J -->|Ja| L[ExtractionFailedError]
+    
+    I --> B
+    B -->|200 OK + strukturierte Daten| A
+    L --> B
+    B -->|422 Unprocessable Entity| A
+
+    classDef provider fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef service fill:#bbf,stroke:#333,stroke-width:2px;
+    class E,F,G provider;
+    class C service;
+
+    ---
+
 
 > Portfolio-Projekt zum Thema *Structured Outputs / LLM-Engineering*.
 > Läuft **sofort ohne API-Key** dank eines regelbasierten Mock-Providers.
