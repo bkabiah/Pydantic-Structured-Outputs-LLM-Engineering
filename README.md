@@ -9,7 +9,7 @@ kostenlose lokale Nutzung).
 
 Willkommen beim **Pydantic AI Extraction Service**, einem robusten Referenzprojekt für modernes AI-Engineering. Dieses Projekt demonstriert, wie unstrukturierte Texte (wie Rechnungen oder Lebensläufe) mithilfe von Large Language Models (LLMs) und strenger Typisierung in garantiert valide, strukturierte Daten verwandelt werden können. Durch die Kombination von FastAPI, Pydantic v2 und einem austauschbaren LLM-Client-Interface wird ein bewährtes "Self-Healing"-Muster implementiert, das Validierungsfehler automatisch abfängt und korrigiert. Das System läuft dank eines integrierten Mock-Providers sofort und ohne API-Keys, ist aber nahtlos für den Einsatz mit OpenAI oder Anthropic in der Produktion skalierbar. Es dient als ideale Grundlage, um Best Practices in API-Design, Datenvalidierung und zuverlässiger LLM-Integration zu demonstrieren.
 ---
-```
+```mermaid
 graph TD
     A[Client] -->|POST /api/v1/extract| B(FastAPI Router)
     B -->|Dependency Injection| C(ExtractionService)
